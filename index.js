@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('chat', (data) => {
-        console.log('initiated',data);
+        // console.log('initiated',data);
         io.sockets.emit('chat', data);
     });
 
