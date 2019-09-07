@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/rish-0-0/simple-chat#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "socket.io": "^2.2.0"

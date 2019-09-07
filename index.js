@@ -1,5 +1,6 @@
 const express = require('express');
 require('dotenv').config();
+const cors = require('cors');
 const path = require('path');
 const app = express();
 const socket = require('socket.io');
@@ -7,6 +8,8 @@ const port = 4203;
 const server = app.listen(port, () => {
     console.log(`Waiting for connections on ::${port}`);
 });
+
+app.use(cors());
 
 // Static Files
 if(process.env.NODE_ENV==="production") {
