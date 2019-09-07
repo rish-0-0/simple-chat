@@ -11,7 +11,7 @@ const initState = {
 const user = (state=initState,action) => {
     switch(action.type) {
         case 'APPEND_MESSAGE':
-            console.log("no what");
+            // console.log("no what");
             const temp = [...state.messages,action.payload];
             return {
                 ...state,

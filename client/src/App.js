@@ -19,7 +19,7 @@ socket.on('typing',(data) => {
 	store.dispatch(isTyping(data));
 });
 socket.on('chat', (data) => {
-	console.log('received');
+	// console.log('received');
 	store.dispatch(appendMessage(data));
 });
 socket.on('no_typing',(data) => {
@@ -60,7 +60,7 @@ function App(props) {
 	};
 
 	const handleSubmit = (handle,message) => {
-		console.log("Called");
+		// console.log("Called");
 		if(handle === '' || message === '') {
 			setError('Handle or message should not be null');
 			return;

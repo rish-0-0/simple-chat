@@ -7,6 +7,8 @@ import 'milligram/dist/milligram.min.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+console.log("Made By Rishabh Anand, BITS PILANI, KK  Birla Goa Campus");
+
 ReactDOM.render(
     <Provider store={store}>
         <App />
