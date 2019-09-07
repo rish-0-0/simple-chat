@@ -1,11 +1,34 @@
 import React, {useState, useEffect} from 'react';
+import { connect } from 'react-redux';	
+import {store} from './store';
+import { justJoined } from './Actions/justJoined';
+import { appendMessage } from './Actions/appendMessage';
+import { isTyping } from './Actions/isTyping';
+import { notTyping } from './Actions/notTyping';
 import socket from './api';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+// SOCKETS EVENT HANDLING
 
-	const [messages,setMessages] = useState([{'handle':'God','message':'You have no messages'}]);
+socket.on('joined', (welcome_gift) => {
+	store.dispatch(justJoined(welcome_gift.success));
+});
+
+socket.on('typing',(data) => {
+	store.dispatch(isTyping(data));
+});
+socket.on('chat', (data) => {
+	console.log('received');
+	store.dispatch(appendMessage(data));
+});
+socket.on('no_typing',(data) => {
+	store.dispatch(notTyping(data));
+});
+
+function App(props) {
+
+	// const [messages,setMessages] = useState([]);
 
 	// const [typing,setTyping] = useState(false);
 
@@ -14,34 +37,24 @@ function App() {
 
 	const [error,setError] = useState(null);
 
-	const [typist,setTypist] = useState(null);
-	const [joined,setJoined] = useState(false);
+	// const [typist,setTypist] = useState(null);
+	// const [joined,setJoined] = useState(false);
 	// const [left,setLeft] = useState(null);
 	// Similar to componentDidMount
 	useEffect(() => {
 		socket.emit('online');
 	},[]);
 
-	socket.on('joined', (welcome_gift) => {
-		setJoined(welcome_gift.success);
-	});
-
-	socket.on('typing',(data) => {
-		setTypist(data.handle);
-	});
-	socket.on('chat', (data) => {
-		console.log('listened');
-		let temp = messages;
-		temp.push({
-			'handle':data.handle,
-			'message':data.message,
-		});
-		console.log("what_happend");
-		setMessages(temp);
-	});
+	
 
 	const handleTyping = () => {
 		socket.emit('typing',{
+			'handle':handle,
+		});
+	};
+
+	const noMoreTyping = () => {
+		socket.emit('no_typing', {
 			'handle':handle,
 		});
 	};
@@ -68,15 +81,16 @@ function App() {
 			</header>
 			<div id="main">
 				<div id="status">
-					{joined ? <em>You are connected</em> : <em>You were denied connection</em>}
+					{props.joined ? <em>You are connected</em> : <em>You were denied connection</em>}
 				</div>
 				<div id="message" className="container">
-					<h1>Chat</h1>
-					{typist ? <pre><code>{typist} is Typing...</code></pre> : null}
-					{messages.map((item,index) => {
+					<h1><em><strong>Chat Messages</strong></em></h1>
+					{props.typist ?<h2> {props.typist} is Typing...</h2> : null}
+					{props.messages.length === 0 ? <h3><em>No messages</em></h3> : null}
+					{props.messages.map((item,index) => {
 						return(
 							<div key={index} className="row">
-								<span><strong>{item.handle}</strong></span><p>{item.message}</p>
+								<span><strong>{item.handle}:</strong></span>&nbsp;<p>{item.message}</p>
 							</div>
 						);
 					})}
@@ -87,13 +101,18 @@ function App() {
 							<label htmlFor="handleField">Handle</label>
 							<input id="handleField" type="text" placeholder="Handle" value={handle} onChange={(e) => setHandle(e.target.value)} />
 							<label htmlFor="messageField">Message</label>
-							<textarea placeholder="Type a message..." id="messageField" value={textarea} onChange={(e) => {
+							<input type='text' placeholder="Type a message..." id="messageField" value={textarea} onChange={(e) => {
 								setTextarea(e.target.value);
-								handleTyping();
-							}}></textarea>
+								if(e.target.value !== '')
+									handleTyping();
+								else
+									noMoreTyping();
+							}} />
 							<input className="button-primary" type="submit" value="send" onClick={(e) => {
 								e.preventDefault();
 								handleSubmit(handle,textarea);
+								setTextarea('');
+								noMoreTyping();
 							}} />
 						</fieldset>
 					</form>
@@ -106,4 +125,14 @@ function App() {
 	);
 }
 
-export default App;
+const mapStateToProps = (state) => {
+	const {messages,typist,joined} = state.user;
+	// console.log("typist:",typist);
+	return {
+		messages,
+		typist,
+		joined,
+	};
+};
+
+export default connect(mapStateToProps)(App);

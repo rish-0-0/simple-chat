@@ -1,3 +1,8 @@
+body {
+  max-height:100vh;
+  overflow: hidden;
+}
+
 .App {
   text-align: center;
   background-color: #282c34;
@@ -25,9 +30,11 @@
 }
 #message {
   color: whitesmoke;
+  overflow: auto;
+  max-height: 45vh;
 } 
 #form {
-
+  padding:3%;
 }
 #handleField {
   color:whitesmoke;
@@ -35,6 +42,18 @@
 }
 #messageField {
   color:whitesmoke;
+}
+::-webkit-scrollbar {
+  width:15px;
+}
+::-webkit-scrollbar-thumb {
+  background:#9c59ca;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 2px #9c59ca;
+  border-radius: 10px;
 }
 
 
