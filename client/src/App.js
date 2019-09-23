@@ -44,7 +44,6 @@ function App(props) {
 	useEffect(() => {
 		socket.emit('online');
 	},[]);
-
 	
 
 	const handleTyping = () => {
@@ -72,7 +71,6 @@ function App(props) {
 			'message':message,
 		});
 	};
-	
 
 	return (
 		<div className="App">
@@ -90,7 +88,7 @@ function App(props) {
 					{props.messages.map((item,index) => {
 						return(
 							<div key={index} className="row">
-								<span><strong>{item.handle}:</strong></span>&nbsp;<p>{item.message}</p>
+								<span><strong>{item.handle}:</strong></span>&nbsp;<div>{item.message}</div>
 							</div>
 						);
 					})}
@@ -107,7 +105,7 @@ function App(props) {
 									handleTyping();
 								else
 									noMoreTyping();
-							}} />
+							}}/>
 							<input className="button-primary" type="submit" value="send" onClick={(e) => {
 								e.preventDefault();
 								handleSubmit(handle,textarea);
